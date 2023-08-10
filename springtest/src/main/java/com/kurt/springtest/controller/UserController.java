@@ -1,6 +1,7 @@
 package com.kurt.springtest.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,21 @@ public class UserController {
 	private UserService uService;
 	
 	@GetMapping
-	public ResponseEntity<List<User>> getUsers() {
-		return new ResponseEntity<List<User>>(uService.getUsers(), HttpStatus.OK) ;
+	public ResponseEntity<List<User>> getUsers(
+			@RequestParam(required = false) String findByName,
+			@RequestParam(required = false) String findByLocation,
+			@RequestParam(required = false) String findByEmail,
+			@RequestParam(required = false) String findByUsername,
+			@RequestParam(defaultValue = "id") String sortBy,
+			@RequestParam(defaultValue = "asc") String sortOrder) {
+		return new ResponseEntity<List<User>>(uService.getUsers(
+				findByName,
+				findByLocation,
+				findByEmail,
+				findByUsername,
+				sortBy,
+				sortOrder
+				), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
@@ -58,5 +72,4 @@ public class UserController {
 	public ResponseEntity<List<User>> getUsersByKeyword(@RequestParam String keyword){
 		return new ResponseEntity<List<User>>(uService.getUsersByKeyword(keyword), HttpStatus.OK); 
 	}
-	
 }

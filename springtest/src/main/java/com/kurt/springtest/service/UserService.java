@@ -6,7 +6,7 @@ import com.kurt.springtest.model.User;
 
 public interface UserService {
 	
-	List<User> getUsers();
+	List<User> getUsers(String findByName, String findByLocation, String findByEmail, String findByUsername, String sortBy, String sortOrder);
 	
 	User saveUser(User user);
 	

@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.kurt.springtest.model.User;
 import com.kurt.springtest.repository.UserRepository;
+import com.kurt.springtest.spec.UserSpecifications;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,8 +19,35 @@ public class UserServiceImpl implements UserService {
 	private UserRepository uRepository;
 	
 	@Override
-	public List<User> getUsers() {
-		return uRepository.findAll();
+	public List<User> getUsers(
+			String findByName,
+			String findByLocation,
+			String findByEmail,
+			String findByUsername,
+			String sortBy,
+			String sortOrder) {
+		
+		// Sort settings (default: ascending order, by name)
+		Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+		
+		// Specification init
+		Specification<User> spec = Specification.where(null);
+		
+		if (findByName != null) {
+            spec = spec.and(UserSpecifications.nameContains(findByName));
+        }
+        if (findByEmail != null) {
+            spec = spec.and(UserSpecifications.emailContains(findByEmail));
+        }
+        if (findByLocation != null) {
+            spec = spec.and(UserSpecifications.locationContains(findByLocation));
+        }
+        if (findByUsername != null) {
+            spec = spec.and(UserSpecifications.usernameContains(findByUsername));
+        }
+		
+        return uRepository.findAll(spec, sort);
+
 	}
 	
 	
